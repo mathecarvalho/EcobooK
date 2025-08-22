@@ -1,5 +1,9 @@
 <template>
     <div class="container my-5">
+        <div class="position-absolute top-0 start-0 p-3">
+            <h2 class="fw-bold text-dark">EcobooK</h2>
+        </div>
+
         <div class="card shadow-lg p-4 rounded-4">
             <h2 class="mb-4 text-center">Cadastro de Livro</h2>
 
@@ -7,97 +11,97 @@
                 <div class="row g-3">
                     <!-- Título -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Título *</label>
+                        <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.titulo" class="form-control" required />
                     </div>
 
                     <!-- Autor -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Autor *</label>
+                        <label class="form-label fw-bold">Autor <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.autor" class="form-control" required />
                     </div>
 
                     <!-- Categoria -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Categoria *</label>
+                        <label class="form-label fw-bold">Categoria <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.categoria" class="form-control" required />
                     </div>
 
                     <!-- Editora -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Editora *</label>
+                        <label class="form-label fw-bold">Editora <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.editora" class="form-control" required />
                     </div>
 
                     <!-- Edição -->
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Edição *</label>
+                        <label class="form-label fw-bold">Edição <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.edicao" class="form-control" required />
                     </div>
 
                     <!-- Ano -->
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Ano *</label>
+                        <label class="form-label fw-bold">Ano <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.anoAtualizacao" class="form-control" required />
                     </div>
 
                     <!-- ISBN -->
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">ISBN *</label>
+                        <label class="form-label fw-bold">ISBN <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.isbn" class="form-control" required />
                     </div>
 
                     <!-- Número de Páginas -->
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Número de Páginas *</label>
+                        <label class="form-label fw-bold">Número de Páginas <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.numeroPaginas" class="form-control" required />
                     </div>
 
                     <!-- Preço -->
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Preço (R$) *</label>
+                        <label class="form-label fw-bold">Preço (R$) <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.preco" class="form-control" step="0.01" required />
                     </div>
 
                     <!-- Grupo de Precificação -->
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Grupo de Precificação *</label>
+                        <label class="form-label fw-bold">Grupo de Precificação <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.grupoPrecificacao" class="form-control" required />
                     </div>
 
                     <!-- Código de Barras -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Código de Barras *</label>
+                        <label class="form-label fw-bold">Código de Barras <span class="text-danger">*</span></label>
                         <input type="text" v-model="form.codigoBarras" class="form-control" required />
                     </div>
 
                     <!-- Imagem URL -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">URL da Imagem *</label>
+                        <label class="form-label fw-bold">URL da Imagem <span class="text-danger">*</span></label>
                         <input type="url" v-model="form.imagem" class="form-control" required />
                     </div>
 
                     <!-- Dimensões -->
                     <div class="col-md-3">
-                        <label class="form-label fw-bold">Altura (cm) *</label>
+                        <label class="form-label fw-bold">Altura (cm) <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.dimensoes.altura" class="form-control" step="0.1" required />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-bold">Largura (cm) *</label>
+                        <label class="form-label fw-bold">Largura (cm) <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.dimensoes.largura" class="form-control" step="0.1" required />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-bold">Profundidade (cm) *</label>
+                        <label class="form-label fw-bold">Profundidade (cm) <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.dimensoes.profundidade" class="form-control" step="0.1" required />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-bold">Peso (kg) *</label>
+                        <label class="form-label fw-bold">Peso (kg) <span class="text-danger">*</span></label>
                         <input type="number" v-model="form.dimensoes.peso" class="form-control" step="0.01" required />
                     </div>
 
                     <!-- Sinopse -->
                     <div class="col-12">
-                        <label class="form-label fw-bold">Sinopse *</label>
+                        <label class="form-label fw-bold">Sinopse <span class="text-danger">*</span></label>
                         <textarea v-model="form.sinopse" class="form-control" rows="5" required></textarea>
                     </div>
                 </div>

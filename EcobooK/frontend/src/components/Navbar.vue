@@ -22,7 +22,7 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link text-dark me-3" to="/cadastrar">
+                        <router-link class="nav-link text-dark me-3" to="/login">
                             <i class="bi bi-person fs-4"></i>
                         </router-link>
                     </li>

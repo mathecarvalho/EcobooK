@@ -1,58 +1,57 @@
 <template>
-    <div class="page-wrapper">
-        <div class="container my-5">
-            <div class="card shadow p-4 rounded-3">
-                <h2 class="mb-4 text-center">Gerenciamento de Clientes</h2>
+    <div class="wrapper py-5">
+        <div class="container-fluid">
+            <div class="container-fluid mb-4">
+                <!-- Topo: Marca, Barra de busca e Botão -->
+                <div class="d-flex align-items-center justify-content-between flex-wrap">
 
-                <!-- Barra de busca -->
-                <div class="d-flex mb-3">
-                    <input
-                        type="text"
-                        v-model="search"
-                        class="form-control me-2"
-                        placeholder="Buscar por nome, e-mail ou CPF"
-                    />
-                    <button class="btn btn-dark">Buscar</button>
-                </div>
+                    <!-- Marca no canto esquerdo -->
+                    <div class="me-3"><h2 class="fw-bold text-dark m-0">EcobooK</h2></div>
 
-                <!-- Botão de adicionar -->
-                <div class="d-flex justify-content-end mb-3">
-                    <button class="btn btn-success" @click="adicionarCliente">
-                        + Adicionar Cliente
-                    </button>
-                </div>
+                    <!-- Barra de busca centralizada -->
+                    <div class="mx-2 flex-grow-1" style="min-width: 200px; max-width: 300px;">
+                        <div class="input-group input-group-sm">
+                            <input type="search" class="form-control border-dark" v-model="search" placeholder="Buscar clientes..."/>
+                            <span class="input-group-text bg-white border-dark"><i class="bi bi-search fs-5"></i></span>
+                        </div>
+                    </div>
 
-                <!-- Tabela de usuários -->
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
-                            <th>CPF</th>
-                            <th>Status</th>
-                            <th>Data de Cadastro</th>
-                            <th>Ações</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="cliente in filteredClientes" :key="cliente.id" class="cursor-pointer" @click="editarCliente(cliente)">
-                            <td>{{ cliente.nome }}</td>
-                            <td>{{ cliente.email }}</td>
-                            <td>{{ cliente.telefone }}</td>
-                            <td>{{ cliente.cpf }}</td>
-                            <td>
-                                <span class="badge" :class="cliente.ativo ? 'bg-success' : 'bg-secondary'">{{ cliente.ativo ? 'Ativo' : 'Inativo' }}</span>
-                            </td>
-                            <td>{{ cliente.dataCadastro }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger" @click.stop="excluirCliente(cliente.id)">Excluir</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <!-- Botão Novo Cliente -->
+                    <router-link class="btn btn-dark fw-bold" to="/adm/clientes/cadastrar">➕ Novo Cliente</router-link>
                 </div>
+            </div>
+
+            <!-- Lista de Clientes -->
+            <div class="row g-4">
+                <div v-for="cliente in clientesFiltrados" :key="cliente.id" class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm h-100 d-flex flex-row p-3 align-items-center">
+
+                        <!-- Checkbox -->
+                        <div class="form-check me-3">
+                            <input class="form-check-input" type="checkbox" v-model="selecionados" :value="cliente.id"/>
+                        </div>
+
+                        <!-- Informações -->
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-1">{{ cliente.nome }}</h5>
+                            <p class="mb-1 text-muted">{{ cliente.email }}</p>
+                            <p class="mb-1"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+                            <p class="mb-2"><strong>Data de Cadastro:</strong> {{ cliente.dataCadastro }}</p>
+
+                            <!-- Ações -->
+                            <div>
+                                <button class="btn btn-sm btn-dark bg-gradient me-2" @click="editarCliente(cliente.id)">✏️ Editar</button>
+                                <button class="btn btn-sm btn-danger bg-gradient" @click="removerCliente(cliente.id)">🗑️ Remover</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações em lote -->
+            <div class="mt-4 d-flex justify-content-end">
+                <button class="btn btn-danger bg-gradient me-2" :disabled="selecionados.length === 0" @click="removerSelecionados">🗑️ Remover Selecionados ({{ selecionados.length }})</button>
+                <button class="btn btn-dark bg-gradient" :disabled="selecionados.length === 0" @click="editarSelecionados">✏️ Editar Selecionados ({{ selecionados.length }})</button>
             </div>
         </div>
     </div>
@@ -64,47 +63,78 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const clientes = ref([
-    { id: 1, nome: "Ana Souza", email: "ana@email.com", telefone: "11999999999", cpf: "123.456.789-00", ativo: true, dataCadastro: "10/08/2025" },
-    { id: 2, nome: "João Silva", email: "joao@email.com", telefone: "11988888888", cpf: "987.654.321-00", ativo: false, dataCadastro: "05/08/2025" },
-    { id: 3, nome: "Maria Oliveira", email: "maria@email.com", telefone: "21977777777", cpf: "456.789.123-00", ativo: true, dataCadastro: "01/08/2025" },
+interface Cliente {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    dataCadastro: string;
+}
+
+const clientes = ref<Cliente[]>([
+    { id: 1, nome: "João Silva", email: "joao@email.com", telefone: "(11) 99999-1111", dataCadastro: "2023-01-15" },
+    { id: 2, nome: "Maria Oliveira", email: "maria@email.com", telefone: "(21) 98888-2222", dataCadastro: "2023-03-22" },
+    { id: 3, nome: "Carlos Souza", email: "carlos@email.com", telefone: "(31) 97777-3333", dataCadastro: "2023-05-10" },
 ]);
 
+const selecionados = ref<number[]>([]);
 const search = ref("");
 
-// Filtro de busca
-const filteredClientes = computed(() => {
-    if (!search.value) return clientes.value;
-    return clientes.value.filter(
-        c =>
-            c.nome.toLowerCase().includes(search.value.toLowerCase()) ||
-            c.email.toLowerCase().includes(search.value.toLowerCase()) ||
-            c.cpf.includes(search.value)
-    );
-});
+const clientesFiltrados = computed(() =>
+    clientes.value.filter(c =>
+        c.nome.toLowerCase().includes(search.value.toLowerCase()) ||
+        c.email.toLowerCase().includes(search.value.toLowerCase())
+    )
+);
 
-// Função para navegar para a tela de cadastro
-function adicionarCliente() {
-    router.push("/adm/clientes/cadastrar");
+function editarCliente(id: number) {
+    router.push({ name: "ClienteEditar", params: { id: id } });
+    // alert("Editar cliente ID: " + id);
 }
 
-// Navegar para a tela de edição
-function editarCliente(cliente: any) {
-    router.push(`/adm/clientes/editar/${cliente.id}`);
+function removerCliente(id: number) {
+    if (confirm("Deseja realmente remover este cliente?")) {
+        clientes.value = clientes.value.filter(c => c.id !== id);
+        selecionados.value = selecionados.value.filter(s => s !== id);
+    }
 }
 
-function excluirCliente(id: number) {
-    clientes.value = clientes.value.filter(c => c.id !== id);
+function removerSelecionados() {
+    if (confirm("Deseja remover os clientes selecionados?")) {
+        clientes.value = clientes.value.filter(c => !selecionados.value.includes(c.id));
+        selecionados.value = [];
+    }
+}
+
+function editarSelecionados() {
+    alert("Editar clientes selecionados: " + selecionados.value.join(", "));
 }
 </script>
 
 <style scoped>
-.page-wrapper {
+.wrapper {
     background-color: #f8f8f8;
     min-height: 100vh;
-    padding: 20px;
 }
-.cursor-pointer {
-    cursor: pointer;
+
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.btn-dark, .btn-danger {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-dark:hover {
+    background-color: #222;
+}
+
+.btn-danger:hover {
+    background-color: #c00;
 }
 </style>

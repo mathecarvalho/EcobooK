@@ -1,5 +1,9 @@
 <template>
     <div class="wrapper">
+        <!-- Marca no canto superior esquerdo -->
+        <div class="position-absolute top-0 start-0 p-3">
+            <h2 class="fw-bold text-dark">EcobooK</h2>
+        </div>
         <div class="container d-flex justify-content-center align-items-center min-vh-100">
             <div class="card shadow rounded-3 p-4 m-4" style="max-width: 800px; width: 100%;">
                 <h3 class="text-center mb-4">Cadastro de Cliente</h3>
