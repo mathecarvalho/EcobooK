@@ -12,9 +12,7 @@
                                 <i class="bi bi-person-circle fs-1 mb-3"></i>
                                 <h5 class="card-title">Perfil</h5>
                                 <p class="card-text">Gerencie suas informações pessoais.</p>
-                                <router-link to="/editar" class="btn btn-dark mt-auto">
-                                    Acessar
-                                </router-link>
+                                <router-link to="/editar" class="btn btn-dark mt-auto">Acessar</router-link>
                             </div>
                         </div>
                     </div>
@@ -26,9 +24,7 @@
                                 <i class="bi bi-bag-check fs-1 mb-3"></i>
                                 <h5 class="card-title">Meus Pedidos</h5>
                                 <p class="card-text">Acompanhe o status de suas compras.</p>
-                                <router-link to="/compras" class="btn btn-dark mt-auto">
-                                    Acessar
-                                </router-link>
+                                <router-link to="/pedidos" class="btn btn-dark mt-auto">Acessar</router-link>
                             </div>
                         </div>
                     </div>
@@ -40,9 +36,7 @@
                                 <i class="bi bi-heart fs-1 mb-3"></i>
                                 <h5 class="card-title">Favoritos</h5>
                                 <p class="card-text">Veja os livros que você salvou.</p>
-                                <router-link to="/usuario/favoritos" class="btn btn-dark mt-auto">
-                                    Acessar
-                                </router-link>
+                                <router-link to="/usuario/favoritos" class="btn btn-dark mt-auto">Acessar</router-link>
                             </div>
                         </div>
                     </div>
@@ -54,9 +48,7 @@
                                 <i class="bi bi-gear fs-1 mb-3"></i>
                                 <h5 class="card-title">Configurações</h5>
                                 <p class="card-text">Ajuste suas preferências.</p>
-                                <router-link to="/usuario/configuracoes" class="btn btn-dark mt-auto">
-                                    Acessar
-                                </router-link>
+                                <router-link to="/usuario/configuracoes" class="btn btn-dark mt-auto">Acessar</router-link>
                             </div>
                         </div>
                     </div>
@@ -68,13 +60,10 @@
                                 <i class="bi bi-box-arrow-right fs-1 mb-3"></i>
                                 <h5 class="card-title">Sair</h5>
                                 <p class="card-text">Encerre sua sessão de forma segura.</p>
-                                <button @click="logout" class="btn btn-dark mt-auto">
-                                    Sair
-                                </button>
+                                <button @click="logout" class="btn btn-dark mt-auto">Sair</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

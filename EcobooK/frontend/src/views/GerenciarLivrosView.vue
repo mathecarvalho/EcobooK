@@ -2,24 +2,15 @@
     <div class="wrapper py-5">
         <div class="container-fluid">
             <div class="container-fluid mb-4">
-                <!-- Título da Tela -->
-<!--                <h3 class="text-center fw-bold mb-3">Livros Cadastrados</h3>-->
-
                 <!-- Topo: Marca, Barra de busca e Botão -->
                 <div class="d-flex align-items-center justify-content-between flex-wrap">
-
-                    <!-- Marca no canto esquerdo -->
                     <div class="me-3"><h2 class="fw-bold text-dark m-0">EcobooK</h2></div>
-
-                    <!-- Barra de busca centralizada -->
                     <div class="mx-2 flex-grow-1" style="min-width: 200px; max-width: 300px;">
                         <div class="input-group input-group-sm">
                             <input type="search" class="form-control border-dark" v-model="search" placeholder="Buscar livros..."/>
                             <span class="input-group-text bg-white border-dark"><i class="bi bi-search fs-5"></i></span>
                         </div>
                     </div>
-
-                    <!-- Botão Novo Livro -->
                     <router-link class="btn btn-dark fw-bold" to="/adm/livros/cadastrar">➕ Novo Livro</router-link>
                 </div>
             </div>
@@ -41,13 +32,26 @@
                             <h5 class="fw-bold mb-1">{{ produto.titulo }}</h5>
                             <p class="mb-1 text-muted">{{ produto.autor }}</p>
                             <p class="mb-1"><strong>Editora:</strong> {{ produto.editora }}</p>
-                            <p class="mb-1"><strong>Ano:</strong> {{ produto.anoAtualizacao }}</p>
-                            <p class="mb-2 fw-semibold">R$ {{ produto.preco.toFixed(2) }}</p>
+                            <p class="mb-1 d-flex justify-content-between">
+                                <span><strong>Ano:</strong> {{ produto.anoAtualizacao }}</span>
+                                <span><strong>Estoque:</strong> {{ produto.estoque }}</span>
+                            </p>
+                            <p class="mb-1 d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">R$ {{ produto.preco.toFixed(2) }}</span>
+                                <span :class="produto.ativo ? 'text-success fw-bold' : 'text-danger fw-bold'">{{ produto.ativo ? 'Ativo' : 'Inativo' }}</span>
+                            </p>
 
                             <!-- Ações -->
-                            <div>
-                                <button class="btn btn-sm btn-dark bg-gradient me-2" @click="editarLivro(produto.id)">✏️ Editar</button>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-sm btn-dark bg-gradient" @click="editarLivro(produto.id)">✏️ Editar</button>
                                 <button class="btn btn-sm btn-danger bg-gradient" @click="removerLivro(produto.id)">🗑️ Remover</button>
+                                <button
+                                    class="btn btn-sm"
+                                    :class="produto.ativo ? 'btn-secondary' : 'btn-success'"
+                                    @click="toggleAtivo(produto)"
+                                >
+                                    {{ produto.ativo ? 'Inativar' : 'Ativar' }}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -77,17 +81,15 @@ interface Produto {
     imagem: string;
     editora: string;
     anoAtualizacao: number;
+    estoque: number;
+    ativo: boolean;
 }
 
 const produtos = ref<Produto[]>([
-    { id: 1, titulo: "Clean Code", autor: "Robert C. Martin", preco: 120.0, imagem: "https://m.media-amazon.com/images/I/41xShlnTZTL._SX374_BO1,204,203,200_.jpg", editora: "Prentice Hall", anoAtualizacao: 2020 },
-    { id: 2, titulo: "Use a Cabeça! Java", autor: "Kathy Sierra, Bert Bates", preco: 129.9, imagem: "https://m.media-amazon.com/images/I/610D1O8WWOL._SY425_BO1,204,203,200_.jpg", editora: "Alta Books", anoAtualizacao: 2015 },
-    { id: 3, titulo: "Domain-Driven Design", autor: "Eric Evans", preco: 149.9, imagem: "https://m.media-amazon.com/images/I/61aIS4n2jZL._SY466_BO1,204,203,200_.jpg", editora: "Addison-Wesley", anoAtualizacao: 2016 },
-    { id: 4, titulo: "Clean Architecture", autor: "Robert C. Martin", preco: 139.9, imagem: "https://m.media-amazon.com/images/I/41-sN-mzwKL._SX374_BO1,204,203,200_.jpg", editora: "Prentice Hall", anoAtualizacao: 2017 },
-    { id: 5, titulo: "The Pragmatic Programmer", autor: "Andrew Hunt, David Thomas", preco: 99.9, imagem: "https://m.media-amazon.com/images/I/41as+WafrFL._SX380_BO1,204,203,200_.jpg", editora: "Addison-Wesley", anoAtualizacao: 2019 },
-    { id: 6, titulo: "Introdução à Linguagem SQL", autor: "Thomas Nield", preco: 139.9, imagem: "https://m.media-amazon.com/images/I/711siL1zU1L._SY425_BO1,204,203,200_.jpg", editora: "Novatec", anoAtualizacao: 2016 },
-    { id: 7, titulo: "Use a Cabeça!: Programação JavaScript", autor: "Eric FreemanEric Freeman", preco: 109.9, imagem: "https://m.media-amazon.com/images/I/71ytnrVAjaL._SY466_BO1,204,203,200_.jpg", editora: "Alta Books", anoAtualizacao: 2016 },
-    { id: 8, titulo: "Orientação a Objetos e SOLID Para Ninjas", autor: "Mauricio Aniche", preco: 99.9, imagem: "https://m.media-amazon.com/images/I/61N84VgZ4wL._SY466_.jpg", editora: "Casa do Código", anoAtualizacao: 2015 }
+    { id: 1, titulo: "Clean Code", autor: "Robert C. Martin", preco: 120.0, imagem: "https://m.media-amazon.com/images/I/41xShlnTZTL._SX374_BO1,204,203,200_.jpg", editora: "Prentice Hall", anoAtualizacao: 2020, estoque: 10, ativo: true },
+    { id: 2, titulo: "Use a Cabeça! Java", autor: "Kathy Sierra, Bert Bates", preco: 129.9, imagem: "https://m.media-amazon.com/images/I/610D1O8WWOL._SY425_BO1,204,203,200_.jpg", editora: "Alta Books", anoAtualizacao: 2015, estoque: 5, ativo: true },
+    { id: 3, titulo: "Domain-Driven Design", autor: "Eric Evans", preco: 149.9, imagem: "https://m.media-amazon.com/images/I/61aIS4n2jZL._SY466_BO1,204,203,200_.jpg", editora: "Addison-Wesley", anoAtualizacao: 2016, estoque: 2, ativo: false },
+    // demais livros...
 ]);
 
 const selecionados = ref<number[]>([]);
@@ -100,13 +102,8 @@ const produtosFiltrados = computed(() =>
     )
 );
 
-function adicionarLivro() {
-    alert("Ir para cadastro de novo livro");
-}
-
 function editarLivro(id: number) {
     router.push({ name: "LivroEditar", params: { id: id } });
-    // alert("Editar livro ID: " + id);
 }
 
 function removerLivro(id: number) {
@@ -125,6 +122,11 @@ function removerSelecionados() {
 
 function editarSelecionados() {
     alert("Editar livros selecionados: " + selecionados.value.join(", "));
+}
+
+// Alterna o status ativo/inativo
+function toggleAtivo(produto: Produto) {
+    produto.ativo = !produto.ativo;
 }
 </script>
 
@@ -147,7 +149,7 @@ function editarSelecionados() {
     border-radius: 4px;
 }
 
-.btn-dark, .btn-danger {
+.btn-dark, .btn-danger, .btn-warning, .btn-success {
     transition: all 0.2s ease-in-out;
 }
 
@@ -157,5 +159,23 @@ function editarSelecionados() {
 
 .btn-danger:hover {
     background-color: #c00;
+}
+
+.btn-warning {
+    color: #fff;
+    background-color: #ff9800;
+}
+
+.btn-warning:hover {
+    background-color: #e68900;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
 }
 </style>

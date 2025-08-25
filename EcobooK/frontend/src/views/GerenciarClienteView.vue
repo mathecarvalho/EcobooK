@@ -36,12 +36,27 @@
                             <h5 class="fw-bold mb-1">{{ cliente.nome }}</h5>
                             <p class="mb-1 text-muted">{{ cliente.email }}</p>
                             <p class="mb-1"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
-                            <p class="mb-2"><strong>Data de Cadastro:</strong> {{ cliente.dataCadastro }}</p>
+                            <p class="mb-1"><strong>Data de Cadastro:</strong> {{ cliente.dataCadastro }}</p>
+
+                            <!-- Status -->
+                            <p class="mb-2">
+                                <strong>Status: </strong>
+                                <span :class="cliente.ativo ? 'text-success' : 'text-danger'">
+                                    {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
+                                </span>
+                            </p>
 
                             <!-- Ações -->
                             <div>
                                 <button class="btn btn-sm btn-dark bg-gradient me-2" @click="editarCliente(cliente.id)">✏️ Editar</button>
-                                <button class="btn btn-sm btn-danger bg-gradient" @click="removerCliente(cliente.id)">🗑️ Remover</button>
+                                <button class="btn btn-sm btn-danger bg-gradient me-2" @click="removerCliente(cliente.id)">🗑️ Remover</button>
+                                <button
+                                    class="btn btn-sm"
+                                    :class="cliente.ativo ? 'btn-secondary' : 'btn-success'"
+                                    @click="toggleAtivo(cliente)"
+                                >
+                                    {{ cliente.ativo ? 'Inativar' : 'Ativar' }}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -50,8 +65,18 @@
 
             <!-- Ações em lote -->
             <div class="mt-4 d-flex justify-content-end">
-                <button class="btn btn-danger bg-gradient me-2" :disabled="selecionados.length === 0" @click="removerSelecionados">🗑️ Remover Selecionados ({{ selecionados.length }})</button>
-                <button class="btn btn-dark bg-gradient" :disabled="selecionados.length === 0" @click="editarSelecionados">✏️ Editar Selecionados ({{ selecionados.length }})</button>
+                <button class="btn btn-danger bg-gradient me-2" :disabled="selecionados.length === 0" @click="removerSelecionados">
+                    🗑️ Remover Selecionados ({{ selecionados.length }})
+                </button>
+                <button class="btn btn-dark bg-gradient me-2" :disabled="selecionados.length === 0" @click="editarSelecionados">
+                    ✏️ Editar Selecionados ({{ selecionados.length }})
+                </button>
+                <button class="btn btn-success bg-gradient" :disabled="selecionados.length === 0" @click="ativarSelecionados">
+                    ✅ Ativar Selecionados
+                </button>
+                <button class="btn btn-secondary bg-gradient ms-2" :disabled="selecionados.length === 0" @click="inativarSelecionados">
+                    🚫 Inativar Selecionados
+                </button>
             </div>
         </div>
     </div>
@@ -69,12 +94,13 @@ interface Cliente {
     email: string;
     telefone: string;
     dataCadastro: string;
+    ativo: boolean;
 }
 
 const clientes = ref<Cliente[]>([
-    { id: 1, nome: "João Silva", email: "joao@email.com", telefone: "(11) 99999-1111", dataCadastro: "2023-01-15" },
-    { id: 2, nome: "Maria Oliveira", email: "maria@email.com", telefone: "(21) 98888-2222", dataCadastro: "2023-03-22" },
-    { id: 3, nome: "Carlos Souza", email: "carlos@email.com", telefone: "(31) 97777-3333", dataCadastro: "2023-05-10" },
+    { id: 1, nome: "João Silva", email: "joao@email.com", telefone: "(11) 99999-1111", dataCadastro: "2023-01-15", ativo: true },
+    { id: 2, nome: "Maria Oliveira", email: "maria@email.com", telefone: "(21) 98888-2222", dataCadastro: "2023-03-22", ativo: false },
+    { id: 3, nome: "Carlos Souza", email: "carlos@email.com", telefone: "(31) 97777-3333", dataCadastro: "2023-05-10", ativo: true },
 ]);
 
 const selecionados = ref<number[]>([]);
@@ -89,7 +115,6 @@ const clientesFiltrados = computed(() =>
 
 function editarCliente(id: number) {
     router.push({ name: "ClienteEditar", params: { id: id } });
-    // alert("Editar cliente ID: " + id);
 }
 
 function removerCliente(id: number) {
@@ -109,6 +134,22 @@ function removerSelecionados() {
 function editarSelecionados() {
     alert("Editar clientes selecionados: " + selecionados.value.join(", "));
 }
+
+function toggleAtivo(cliente: Cliente) {
+    cliente.ativo = !cliente.ativo;
+}
+
+function ativarSelecionados() {
+    clientes.value.forEach(c => {
+        if (selecionados.value.includes(c.id)) c.ativo = true;
+    });
+}
+
+function inativarSelecionados() {
+    clientes.value.forEach(c => {
+        if (selecionados.value.includes(c.id)) c.ativo = false;
+    });
+}
 </script>
 
 <style scoped>
@@ -126,7 +167,7 @@ function editarSelecionados() {
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
-.btn-dark, .btn-danger {
+.btn-dark, .btn-danger, .btn-warning, .btn-success {
     transition: all 0.2s ease-in-out;
 }
 

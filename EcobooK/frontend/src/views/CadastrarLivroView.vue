@@ -104,6 +104,21 @@
                         <label class="form-label fw-bold">Sinopse <span class="text-danger">*</span></label>
                         <textarea v-model="form.sinopse" class="form-control" rows="5" required></textarea>
                     </div>
+
+                    <!-- Quantidade em Estoque -->
+                    <div class="col-md-6 mt-3">
+                        <label class="form-label fw-bold">Quantidade em Estoque <span class="text-danger">*</span></label>
+                        <input type="number" v-model="form.estoque" class="form-control" min="0" required />
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-6 mt-3">
+                        <label class="form-label fw-bold">Status <span class="text-danger">*</span></label>
+                        <select v-model="form.status" class="form-select" required>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="mt-4 d-flex justify-content-end">
@@ -141,6 +156,8 @@ interface Produto {
     dimensoes: Dimensoes
     grupoPrecificacao: string
     codigoBarras: string
+    estoque: number
+    status: 'ativo' | 'inativo'
 }
 
 const form = reactive<Produto>({
@@ -157,7 +174,9 @@ const form = reactive<Produto>({
     sinopse: '',
     dimensoes: { altura: 0, largura: 0, profundidade: 0, peso: 0 },
     grupoPrecificacao: '',
-    codigoBarras: ''
+    codigoBarras: '',
+    estoque: 0,
+    status: 'ativo'
 })
 
 function salvarLivro() {

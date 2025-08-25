@@ -69,7 +69,7 @@
                         </div>
                         <button class="btn btn-danger btn-sm mt-2" type="button" @click="removerEndereco(index)">Remover</button>
                     </div>
-                    <button class="btn btn-secondary w-100 mb-3" type="button" @click="adicionarEndereco">+ Adicionar Endereço</button>
+                    <button class="btn btn-dark w-100 mb-3" type="button" @click="adicionarEndereco">+ Adicionar Endereço</button>
 
                     <hr>
 
@@ -93,9 +93,9 @@
                         </div>
                         <button class="btn btn-danger btn-sm mt-2" type="button" @click="removerCartao(index)">Remover</button>
                     </div>
-                    <button class="btn btn-secondary w-100 mb-3" type="button" @click="adicionarCartao">+ Adicionar Cartão</button>
+                    <button class="btn btn-dark w-100 mb-3" type="button" @click="adicionarCartao">+ Adicionar Cartão</button>
 
-                    <button class="btn btn-primary w-100 mt-4" type="submit">Salvar Alterações</button>
+                    <button class="btn btn-dark w-100 mt-4" type="submit">Salvar Alterações</button>
                 </form>
             </div>
         </div>

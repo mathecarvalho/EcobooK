@@ -4,7 +4,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container">
                 <!-- Logo -->
-                <router-link class="navbar-brand fw-bold text-dark fs-3" to="/">EcobooK</router-link>
+                <router-link class="navbar-brand fw-bold text-dark fs-2" to="/">EcobooK</router-link>
 
                 <!-- Campo de busca centralizado com ícone à direita -->
                 <div class="mx-auto w-25">
