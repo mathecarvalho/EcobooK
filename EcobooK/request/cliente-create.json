@@ -1,0 +1,56 @@
+{
+  "nome": "Matheus",
+  "sobrenome": "Carvalho",
+  "cpf": "12345678901",
+  "dataNascimento": "1995-08-28",
+  "genero": "Masculino",
+  "telefone": {
+    "tipo": "Celular",
+    "ddd": "11",
+    "numero": "999999999"
+  },
+  "email": "matheus@email.com",
+  "senha": "minhasenha123",
+  "enderecos": [
+    {
+      "tipoResidencia": "Casa",
+      "tipoLogradouro": "Rua",
+      "logradouro": "Rua das Flores",
+      "numero": "123",
+      "complemento": "Apto 101",
+      "bairro": "Jardim Primavera",
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "cep": "01234567",
+      "pais" : "Brasil"
+    },
+    {
+      "tipoResidencia": "Apartamento",
+      "tipoLogradouro": "Rua",
+      "logradouro": "Avenida Central",
+      "numero": "456",
+      "complemento": "",
+      "bairro": "Centro",
+      "cidade": "São Paulo",
+      "estado": "SP",
+      "cep": "01234568",
+      "pais" : "Brasil"
+    }
+  ],
+  "cartoes": [
+    {
+      "numero": "1234567812345678",
+      "nomeImpresso": "Matheus Carvalho",
+      "validade": "12/25",
+      "codigoSeguranca": "123",
+      "bandeira": "VISA"
+    },
+    {
+      "numero": "8765432187654321",
+      "nomeImpresso": "Matheus Carvalho",
+      "validade": "06/26",
+      "codigoSeguranca": "456",
+      "bandeira": "MASTERCARD"
+    }
+  ]
+}
