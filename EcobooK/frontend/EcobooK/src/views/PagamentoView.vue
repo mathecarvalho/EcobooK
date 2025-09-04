@@ -49,7 +49,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import Navbar from "@/components/Navbar.vue";

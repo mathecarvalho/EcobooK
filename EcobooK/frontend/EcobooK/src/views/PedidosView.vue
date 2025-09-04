@@ -34,7 +34,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import DetalhesPedido from "./PedidoDetalhesView.vue";
 import Navbar from "@/components/Navbar.vue";
