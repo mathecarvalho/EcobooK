@@ -5,9 +5,10 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Data
-public class ClienteRequestDTO {
+public class ClienteCreateDTO {
 
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
@@ -15,7 +16,7 @@ public class ClienteRequestDTO {
     @NotBlank(message = "Sobrenome é obrigatório")
     private String sobrenome;
 
-    @Size(min = 11, max = 11)
+    @CPF(message = "CPF inválido")
     @NotBlank(message = "CPF é obrigatório")
     private String cpf;
 
@@ -29,7 +30,7 @@ public class ClienteRequestDTO {
     @NotNull(message = "Telefone é obrigatório")
     private TelefoneDTO telefone;
 
-    @Email
+    @Email(message = "E-mail inválido")
     @NotBlank(message = "Email é obrigatório")
     private String email;
 
@@ -38,9 +39,9 @@ public class ClienteRequestDTO {
 
     @Valid
     @NotEmpty(message = "Endereço é obrigatório")
-    private List<EnderecoDTO> enderecos;
+    private List<EnderecoCreateDTO> enderecos;
 
     @Valid
     @NotEmpty(message = "Cartão é obrigatório")
-    private List<CartaoDTO> cartoes;
+    private List<CartaoCreateDTO> cartoes;
 }

@@ -1,7 +1,7 @@
 package com.ecobook.service;
 
-import com.ecobook.dto.ClienteRequestDTO;
-import com.ecobook.dto.ClienteResponseDTO;
+import com.ecobook.dto.*;
+import com.ecobook.exception.ClienteException;
 import com.ecobook.model.Cartao;
 import com.ecobook.model.Cliente;
 import com.ecobook.model.Endereco;
@@ -17,7 +17,7 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    public ClienteResponseDTO criarCliente(ClienteRequestDTO dto) {
+    public ClienteResponseDTO cadastrar(ClienteCreateDTO dto) {
 
         Telefone telefone = Telefone.builder()
                 .tipo(dto.getTelefone().getTipo())
@@ -27,6 +27,7 @@ public class ClienteService {
 
         List<Endereco> enderecos = dto.getEnderecos().stream().map(e->
                 Endereco.builder()
+                        .nome(e.getNome())
                         .tipoResidencia(e.getTipoResidencia())
                         .tipoLogradouro(e.getTipoLogradouro())
                         .logradouro(e.getLogradouro())
@@ -58,6 +59,7 @@ public class ClienteService {
                 .telefone(telefone)
                 .email(dto.getEmail())
                 .senha(dto.getSenha()) // 👉 aqui é o ponto certo para criptografar no futuro
+                .status(true)
                 .build();
 
         // Associar endereços e cartões ao cliente
@@ -69,12 +71,65 @@ public class ClienteService {
 
         Cliente salvo = clienteRepository.save(cliente);
 
-        return new ClienteResponseDTO(
-                salvo.getId(),
-                salvo.getNome(),
-                salvo.getSobrenome(),
-                salvo.getCpf(),
-                salvo.getEmail()
-        );
+        return ClienteResponseDTO.fromEntity(salvo);
+    }
+
+    public ClienteResponseDTO atualizarCliente(ClientePatchDTO dto) {
+        Cliente cliente = findCliente(dto.getId());
+
+        if (dto.getNome() != null) cliente.setNome(dto.getNome());
+        if (dto.getSobrenome() != null) cliente.setSobrenome(dto.getSobrenome());
+        if (dto.getDataNascimento() != null) cliente.setDataNascimento(dto.getDataNascimento());
+        if (dto.getGenero() != null) cliente.setGenero(dto.getGenero());
+        if (dto.getEmail() != null) cliente.setEmail(dto.getEmail());
+
+        clienteRepository.save(cliente);
+
+        return ClienteResponseDTO.fromEntity(cliente);
+    }
+
+    public ClienteResponseDTO alterarSenha(ClienteSenhaDTO dto) {
+        if(!dto.getNovaSenha().equals(dto.getConfirmaSenha())) throw new ClienteException("Senhas são diferentes");
+        Cliente cliente = findCliente(dto.getId());
+        cliente.setSenha(dto.getNovaSenha());
+        clienteRepository.save(cliente);
+        return ClienteResponseDTO.fromEntity(cliente);
+    }
+
+    public List<ClienteResponseDTO> listarClientes() {
+        return clienteRepository.findAll().stream().map(c->
+                new ClienteResponseDTO(
+                        c.getId(),
+                        c.getNome(),
+                        c.getSobrenome(),
+                        c.getCpf(),
+                        c.getEmail()
+                )).toList();
+    }
+
+//    public Cliente buscarPorId(Long id) {
+//        return clienteRepository.findById(id).orElseThrow(() -> new ClienteException("Cliente não encontrado"));
+//    }
+
+    public ClienteResponseDTO buscarPorId(Long id) {
+        return clienteRepository.findById(id).map(c->
+                new ClienteResponseDTO(
+                        c.getId(),
+                        c.getNome(),
+                        c.getSobrenome(),
+                        c.getCpf(),
+                        c.getEmail()
+                )).orElseThrow(() -> new ClienteException("Cliente não encontrado"));
+    }
+
+    public ClienteResponseDTO alterarStatus(ClienteStatusDTO dto) {
+        Cliente cliente = findCliente(dto.getId());
+        cliente.setStatus(dto.isStatus());
+        clienteRepository.save(cliente);
+        return ClienteResponseDTO.fromEntity(cliente);
+    }
+
+    public Cliente findCliente(Long clienteId) {
+        return clienteRepository.findById(clienteId).orElseThrow(() -> new ClienteException("Cliente não encontrado"));
     }
 }

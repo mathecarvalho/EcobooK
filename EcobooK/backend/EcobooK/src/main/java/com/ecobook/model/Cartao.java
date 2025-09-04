@@ -1,6 +1,7 @@
 package com.ecobook.model;
 
 import com.ecobook.enumeration.Bandeira;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,5 +38,6 @@ public class Cartao {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
+//    @JsonBackReference
     private Cliente cliente;
 }

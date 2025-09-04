@@ -1,5 +1,6 @@
 package com.ecobook.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,9 @@ public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String nome;
 
     @Column(name = "tipo_residencia", nullable = false)
     private String tipoResidencia; // Casa, Apartamento, etc
@@ -48,5 +52,6 @@ public class Endereco {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
+//    @JsonBackReference
     private Cliente cliente;
 }

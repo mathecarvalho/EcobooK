@@ -4,7 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class EnderecoDTO {
+public class EnderecoCreateDTO {
+
+    @NotBlank(message = "Nome do endereço é obrigatório")
+    private String nome;
 
     @NotBlank(message = "Tipo de residência é obrigatório")
     private String tipoResidencia;

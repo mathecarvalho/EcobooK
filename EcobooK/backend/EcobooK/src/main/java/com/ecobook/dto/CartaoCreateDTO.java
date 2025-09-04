@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class CartaoDTO {
+public class CartaoCreateDTO {
 
     @NotBlank(message = "Número do cartão é obrigatório")
     @Pattern(regexp = "\\d{13,16}", message = "Número do cartão deve ter entre 13 e 16 dígitos")
