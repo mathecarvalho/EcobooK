@@ -47,11 +47,11 @@ public class Cliente {
     private String senha;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<Endereco> enderecos;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
+    @JsonManagedReference
     private List<Cartao> cartoes;
 
     @Column(nullable = false)

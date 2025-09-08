@@ -7,7 +7,8 @@ public record ClienteResponseDTO(
         String nome,
         String sobrenome,
         String cpf,
-        String email
+        String email,
+        boolean status
 ) {
 
     public static ClienteResponseDTO fromEntity(Cliente cliente) {
@@ -16,7 +17,8 @@ public record ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getSobrenome(),
                 cliente.getCpf(),
-                cliente.getEmail()
+                cliente.getEmail(),
+                cliente.isStatus()
         );
     }
 }

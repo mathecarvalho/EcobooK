@@ -38,6 +38,6 @@ public class Cartao {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
-//    @JsonBackReference
+    @JsonBackReference
     private Cliente cliente;
 }

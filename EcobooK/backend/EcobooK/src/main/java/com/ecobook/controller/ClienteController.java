@@ -1,6 +1,7 @@
 package com.ecobook.controller;
 
 import com.ecobook.dto.*;
+import com.ecobook.model.Cliente;
 import com.ecobook.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class ClienteController {
                 .body(cliente);
     }
 
+    @PutMapping("/alterar/{id}")
+    public ResponseEntity<ClienteResponseDTO> alterarCliente(@PathVariable long id, @Valid @RequestBody ClienteCreateDTO dto) {
+        return ResponseEntity.ok(clienteService.alterarCliente(id, dto));
+    }
+
     @PatchMapping("/atualizar")
     public ResponseEntity<ClienteResponseDTO> atualizarCliente(@Valid @RequestBody ClientePatchDTO dto) {
         return ResponseEntity.ok(clienteService.atualizarCliente(dto));
@@ -40,14 +46,15 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.listarClientes());
     }
 
-//    @GetMapping("/buscar/{id}")
-//    public ResponseEntity<Cliente> buscarPorId(@PathVariable long id) {
-//        return ResponseEntity.ok(clienteService.buscarPorId(id));
-//    }
 
     @GetMapping("/buscar/{id}")
     public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable long id) {
         return ResponseEntity.ok(clienteService.buscarPorId(id));
+    }
+
+    @GetMapping("/detalhes/{id}")
+    public ResponseEntity<Cliente> detalhesPorId(@PathVariable long id) {
+        return ResponseEntity.ok(clienteService.detalhesPorId(id));
     }
 
     @PatchMapping("/status")

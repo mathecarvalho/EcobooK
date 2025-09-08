@@ -52,6 +52,6 @@ public class Endereco {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
-//    @JsonBackReference
+    @JsonBackReference
     private Cliente cliente;
 }

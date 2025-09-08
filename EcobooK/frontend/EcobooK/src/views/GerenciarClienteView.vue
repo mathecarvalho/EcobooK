@@ -41,8 +41,8 @@
                             <!-- Status -->
                             <p class="mb-2">
                                 <strong>Status: </strong>
-                                <span :class="cliente.ativo ? 'text-success' : 'text-danger'">
-                                    {{ cliente.ativo ? 'Ativo' : 'Inativo' }}
+                                <span :class="cliente.status ? 'text-success' : 'text-danger'">
+                                    {{ cliente.status ? 'Ativo' : 'Inativo' }}
                                 </span>
                             </p>
 
@@ -52,10 +52,10 @@
                                 <button class="btn btn-sm btn-danger bg-gradient me-2" @click="removerCliente(cliente.id)">🗑️ Remover</button>
                                 <button
                                     class="btn btn-sm"
-                                    :class="cliente.ativo ? 'btn-secondary' : 'btn-success'"
+                                    :class="cliente.status ? 'btn-secondary' : 'btn-success'"
                                     @click="toggleAtivo(cliente)"
                                 >
-                                    {{ cliente.ativo ? 'Inativar' : 'Ativar' }}
+                                    {{ cliente.status ? 'Inativar' : 'Ativar' }}
                                 </button>
                             </div>
                         </div>
@@ -83,8 +83,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import api from "@/service/api";
 
 const router = useRouter();
 
@@ -94,17 +95,32 @@ interface Cliente {
     email: string;
     telefone: string;
     dataCadastro: string;
-    ativo: boolean;
+    status: boolean;
 }
 
-const clientes = ref<Cliente[]>([
-    { id: 1, nome: "João Silva", email: "joao@email.com", telefone: "(11) 99999-1111", dataCadastro: "2023-01-15", ativo: true },
-    { id: 2, nome: "Maria Oliveira", email: "maria@email.com", telefone: "(21) 98888-2222", dataCadastro: "2023-03-22", ativo: false },
-    { id: 3, nome: "Carlos Souza", email: "carlos@email.com", telefone: "(31) 97777-3333", dataCadastro: "2023-05-10", ativo: true },
-]);
-
+const clientes = ref<Cliente[]>([]);
 const selecionados = ref<number[]>([]);
 const search = ref("");
+
+// 🔹 Buscar clientes ao carregar
+onMounted(async () => {
+    try {
+        const { data } = await api.get(`/cliente/listar`);
+        console.log("Clientes carregados:", data);
+
+        clientes.value = data.map((c: any) => ({
+            id: c.id,
+            nome: `${c.nome} ${c.sobrenome}`, // junta nome + sobrenome
+            email: c.email,
+            telefone: c.telefone ?? "Não informado", // opcional
+            dataCadastro: c.dataCadastro ?? "—",     // opcional
+            status: c.status                          // backend usa "status"
+        }));
+    } catch (error) {
+        console.error("Erro ao carregar clientes:", error);
+    }
+});
+
 
 const clientesFiltrados = computed(() =>
     clientes.value.filter(c =>
@@ -114,20 +130,32 @@ const clientesFiltrados = computed(() =>
 );
 
 function editarCliente(id: number) {
-    router.push({ name: "ClienteEditar", params: { id: id } });
+    router.push({ name: "ClienteEditar", params: { id } });
 }
 
-function removerCliente(id: number) {
+async function removerCliente(id: number) {
     if (confirm("Deseja realmente remover este cliente?")) {
-        clientes.value = clientes.value.filter(c => c.id !== id);
-        selecionados.value = selecionados.value.filter(s => s !== id);
+        try {
+            await api.delete(`/cliente/${id}`);
+            clientes.value = clientes.value.filter(c => c.id !== id);
+            selecionados.value = selecionados.value.filter(s => s !== id);
+        } catch (error) {
+            console.error("Erro ao remover cliente:", error);
+        }
     }
 }
 
-function removerSelecionados() {
+async function removerSelecionados() {
     if (confirm("Deseja remover os clientes selecionados?")) {
-        clientes.value = clientes.value.filter(c => !selecionados.value.includes(c.id));
-        selecionados.value = [];
+        try {
+            await Promise.all(
+                selecionados.value.map(id => api.delete(`/cliente/${id}`))
+            );
+            clientes.value = clientes.value.filter(c => !selecionados.value.includes(c.id));
+            selecionados.value = [];
+        } catch (error) {
+            console.error("Erro ao remover selecionados:", error);
+        }
     }
 }
 
@@ -135,20 +163,46 @@ function editarSelecionados() {
     alert("Editar clientes selecionados: " + selecionados.value.join(", "));
 }
 
-function toggleAtivo(cliente: Cliente) {
-    cliente.ativo = !cliente.ativo;
+// 🔹 Ativar / Inativar cliente individual
+async function toggleAtivo(cliente: Cliente) {
+    try {
+        await api.patch(`/cliente/status`, { id: cliente.id, status: !cliente.status });
+        console.log(cliente.id);
+        cliente.status = !cliente.status; // atualiza local
+    } catch (error) {
+        console.error("Erro ao atualizar status:", error);
+    }
 }
 
-function ativarSelecionados() {
-    clientes.value.forEach(c => {
-        if (selecionados.value.includes(c.id)) c.ativo = true;
-    });
+// 🔹 Ativar/Inativar em lote
+async function ativarSelecionados() {
+    try {
+        await Promise.all(
+            selecionados.value.map(id =>
+                api.patch(`/cliente/status`, { id, status: true })
+            )
+        );
+        clientes.value.forEach(c => {
+            if (selecionados.value.includes(c.id)) c.status = true;
+        });
+    } catch (error) {
+        console.error("Erro ao ativar selecionados:", error);
+    }
 }
 
-function inativarSelecionados() {
-    clientes.value.forEach(c => {
-        if (selecionados.value.includes(c.id)) c.ativo = false;
-    });
+async function inativarSelecionados() {
+    try {
+        await Promise.all(
+            selecionados.value.map(id =>
+                api.patch(`/cliente/status`, { id, status: false })
+            )
+        );
+        clientes.value.forEach(c => {
+            if (selecionados.value.includes(c.id)) c.status = false;
+        });
+    } catch (error) {
+        console.error("Erro ao inativar selecionados:", error);
+    }
 }
 </script>
 

@@ -8,6 +8,7 @@ import com.ecobook.model.Endereco;
 import com.ecobook.model.Telefone;
 import com.ecobook.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -74,6 +75,13 @@ public class ClienteService {
         return ClienteResponseDTO.fromEntity(salvo);
     }
 
+    public ClienteResponseDTO alterarCliente(long id, ClienteCreateDTO dto) {
+        Cliente cliente = findCliente(id);
+        BeanUtils.copyProperties(dto, cliente, "id");
+        clienteRepository.save(cliente);
+        return ClienteResponseDTO.fromEntity(cliente);
+    }
+
     public ClienteResponseDTO atualizarCliente(ClientePatchDTO dto) {
         Cliente cliente = findCliente(dto.getId());
 
@@ -103,13 +111,10 @@ public class ClienteService {
                         c.getNome(),
                         c.getSobrenome(),
                         c.getCpf(),
-                        c.getEmail()
+                        c.getEmail(),
+                        c.isStatus()
                 )).toList();
     }
-
-//    public Cliente buscarPorId(Long id) {
-//        return clienteRepository.findById(id).orElseThrow(() -> new ClienteException("Cliente não encontrado"));
-//    }
 
     public ClienteResponseDTO buscarPorId(Long id) {
         return clienteRepository.findById(id).map(c->
@@ -118,8 +123,13 @@ public class ClienteService {
                         c.getNome(),
                         c.getSobrenome(),
                         c.getCpf(),
-                        c.getEmail()
+                        c.getEmail(),
+                        c.isStatus()
                 )).orElseThrow(() -> new ClienteException("Cliente não encontrado"));
+    }
+
+    public Cliente detalhesPorId(Long id) {
+        return clienteRepository.findById(id).orElseThrow(() -> new ClienteException("Cliente não encontrado"));
     }
 
     public ClienteResponseDTO alterarStatus(ClienteStatusDTO dto) {
